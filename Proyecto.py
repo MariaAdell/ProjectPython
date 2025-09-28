@@ -1,4 +1,11 @@
 # =========================================================
+# importaciones iniciales
+# =========================================================
+
+from functools import reduce
+import math
+
+# =========================================================
 # 1. Escribe una función que reciba una cadena de texto como parámetro y devuelva un diccionario con las frecuencias de cada letra en la cadena.
 #  Los espacios no deben ser considerados.
 # =========================================================
@@ -44,7 +51,7 @@ def duplicar_valores(lista_numeros):
 # con todas las palabras de la lista original que contengan la palabra objetivo.
 # =========================================================
 
-def filtrar_palabras__objetivo(lista_palabras, palabra_objetivo):
+def filtrar_palabras_objetivo(lista_palabras, palabra_objetivo):
     """
     Filtra las palabras que contienen la palabra objetivo.
 
@@ -134,7 +141,7 @@ def factorial(numero):
 # =========================================================
 
 def tupla_a_string(lista_tuplas):
-    """_summary_
+    """
 
     Convierte una lista de tuplas en una lista de strings.
 
@@ -146,7 +153,7 @@ def tupla_a_string(lista_tuplas):
     """
 
 
-    return list(map(str, lista_tuplas))
+    return list(map(lambda t: ",".join(map(str, t)), lista_tuplas))
 
 # =========================================================
 # 8. Escribe un programa que pida al usuario dos números e intente dividirlos. Si el usuario ingresa un valor no numérico o intenta dividir por cero, 
@@ -373,8 +380,6 @@ def palabras_mas_largas(cadena, n):
 # quinientos setenta y dos (572). Usa la función reduce()
 # =========================================================
 
-from functools import reduce
-
 def lista_a_numero(digitos):
     """
     Convierte una lista de dígitos en el número correspondiente.
@@ -497,8 +502,6 @@ def calcular_cubo(numero):
 # 22. Dada una lista numérica, obtén el producto total de los valores de dicha lista.Usa la función reduce()
 # =========================================================
 
-from functools import reduce
-
 def producto_lista(lista_numeros):
     """
     Calcula el producto de todos los valores en una lista.
@@ -519,8 +522,6 @@ def producto_lista(lista_numeros):
 # =========================================================
 # 23. Concatena una lista de palabras.Usa la función reduce()
 # =========================================================
-
-from functools import reduce
 
 def concatenar_palabras(lista_palabras):
     """
@@ -543,8 +544,6 @@ def concatenar_palabras(lista_palabras):
 # =========================================================
 # 24.  Calcula la diferencia total en los valores de una lista. Usa la función reduce()
 # =========================================================
-
-from functools import reduce
 
 def diferencia_total(lista_numeros):
     """
@@ -591,7 +590,7 @@ resto_lambda = lambda num1, num2: num1 % num2
 #27. Crea una función que calcule el promedio de una lista de números
 # =========================================================
 
-def promedio(lista_numeros):
+def promedio_v2(lista_numeros):
     """
     Calcula el promedio de una lista de números.
 
@@ -808,11 +807,11 @@ class Arbol:
         Returns:
             str: Información formateada del árbol.
         """
-        return (
-            f"Tronco: {self.tronco}\n"
-            f"Número de ramas: {len(self.ramas)}\n"
-            f"Longitudes de las ramas: {self.ramas}"
-        )
+        return {
+            "tronco": self.tronco,
+            "num_ramas": len(self.ramas),
+            "long_ramas": self.ramas
+        }
     
 # Casos de Uso 34
 # 1. Crear un árbol
@@ -876,29 +875,29 @@ class UsuarioBanco:
 
         return f"{self.nombre} ha retirado {cantidad}€. Saldo actual: {self.saldo}€"
 
-    def transferir_dinero(self, otro_usuario, cantidad):
+    def transferir_dinero(self, receptor, cantidad):
         """
-        Transfiere dinero desde otro usuario al usuario actual.
+        Transfiere dinero desde el usuario actual hacia otro usuario.
 
         Args:
-            otro_usuario (UsuarioBanco): Usuario que envía el dinero.
+            receptor (UsuarioBanco): Usuario que recibe el dinero.
             cantidad (float): Cantidad a transferir.
 
         Raises:
-            ValueError: Si el otro usuario no tiene fondos suficientes.
+            ValueError: Si el usuario no tiene fondos suficientes.
         """
 
-        if not isinstance(otro_usuario, UsuarioBanco):
-            raise ValueError("El remitente debe ser un objeto UsuarioBanco.")
+        if not isinstance(receptor, UsuarioBanco):
+            raise ValueError("El receptor debe ser un objeto UsuarioBanco.")
         if cantidad <= 0:
             raise ValueError("La cantidad a transferir debe ser positiva.")
-        if cantidad > otro_usuario.saldo:
-            raise ValueError(f"{otro_usuario.nombre} no tiene suficiente saldo para transferir.")
+        if cantidad > self.saldo:
+            raise ValueError(f"{self.nombre} no tiene suficiente saldo para realizar la transferencia.")
         
-        otro_usuario.saldo -= cantidad
-        self.saldo += cantidad
+        self.saldo -= cantidad
+        receptor.saldo += cantidad
 
-        return f"{otro_usuario.nombre} transfirió {cantidad}€ a {self.nombre}. Saldo de {self.nombre}: {self.saldo}€"
+        return f"{self.nombre} transfirió {cantidad}€ a {receptor.nombre}. Saldo actual: {self.saldo}€"
 
     def agregar_dinero(self, cantidad):
         """
@@ -1030,13 +1029,11 @@ print(procesar_texto(texto_prueba, "eliminar", "el"))
 # 38. Genera un programa que nos diga si es de noche, de día o tarde según la hora proporcionada por el usuario.
 # =========================================================
 
-def momento_dia():
+def momento_dia(hora):
     """
     Pedir al usuario una hora y confirmar si es mañana, tarde o noche.
     """
     try:
-        hora = int(input("Introduce la hora (0-23): "))
-
         if hora < 0 or hora > 23:
             raise ValueError("La hora debe estar entre 0 y 23.")
 
@@ -1092,8 +1089,6 @@ def calificacion(nota):
 # (una tupla con los datos necesarios para calcular el área de la figura)
 # =========================================================
 
-import math
-
 def calcular_area(figura, datos):
     """
     Calcula el área de una figura geométrica.
@@ -1131,19 +1126,13 @@ def calcular_area(figura, datos):
 # 41. Programa en Python que utilice condicionales para determinar el monto final de una compra en una tienda en línea, después de aplicar un descuento
 # =========================================================
 
-def compra():
+def compra(precio, tiene_cupon, descuento=0):
     """
     Calcula el monto final de una compra interactuando con el usuario.
     """
     try:
-        precio = float(input("Introduce el precio original del artículo (€): "))
-
-        tiene_cupon = input("¿Tienes un cupón de descuento? (S/N): ").strip().upper()
-
         if tiene_cupon == "S":
-
-            descuento = float(input("Introduce el valor del cupón de descuento (€): "))
-            
+                        
             if descuento > 0:
                 precio_final = precio - descuento
                 if precio_final < 0:
@@ -1159,6 +1148,8 @@ def compra():
         else:
             print("Respuesta no válida. No se aplica descuento.")
             return precio
+        
     except ValueError:
         print("Error: introduce un valor numérico válido.")
         return None
+    
